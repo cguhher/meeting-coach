@@ -5,85 +5,31 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>Meeting Coach</title>
 <style>
-:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
-*{box-sizing:border-box}
-body{margin:0;background:#0b1020;color:#f3f4f6;min-height:100vh}
-main{width:min(900px,100%);margin:auto;min-height:100vh;padding:18px;display:flex;flex-direction:column;gap:15px}
-.score{text-align:center;font-weight:800;font-size:clamp(18px,3vw,28px)}
-.sub{text-align:center;color:#9ca3af;font-size:13px;margin-top:4px}
-.lightWrap{flex:1;min-height:280px;display:grid;place-items:center}
-.light{width:min(45vh,42vw,330px);min-width:230px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;text-align:center;background:#374151;box-shadow:0 0 35px #0008;transition:.15s}
-.light.green{background:#22c55e;color:#07150c;box-shadow:0 0 55px #22c55e77}
-.light.amber{background:#f59e0b;color:#211300;box-shadow:0 0 55px #f59e0b77}
-.light.red{background:#ef4444;color:white;box-shadow:0 0 65px #ef444499}
-.timer{font-size:clamp(48px,8vw,82px);font-weight:900;font-variant-numeric:tabular-nums;line-height:1}
-.state{font-weight:900;letter-spacing:.08em;margin-top:8px}
-.panel{background:#151c2d;border:1px solid #293247;border-radius:17px;padding:15px}
-.meter{height:26px;background:#080c16;border-radius:13px;overflow:hidden;position:relative}
-.fill{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444)}
-.line{position:absolute;top:0;bottom:0;width:3px;background:white;left:55%}
-.row{display:grid;grid-template-columns:1fr 58px;gap:12px;align-items:center}
-.val{text-align:right;font-variant-numeric:tabular-nums}
-label{font-weight:750;display:block;margin-bottom:8px}
-input[type=range]{width:100%}
-.buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-button{border:0;border-radius:13px;padding:14px;font-weight:800;font-size:15px;background:#e5e7eb;color:#111827}
-button.secondary{background:#293247;color:#f3f4f6}
-.cal{display:none;margin-top:12px;border-top:1px solid #293247;padding-top:13px}
-.cal.show{display:block}
-.calgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.sample{background:#293247;color:white}
-.sample.active{outline:3px solid white}
-.result{margin-top:10px;color:#d1d5db;line-height:1.5}
-.use{width:100%;margin-top:10px}
-.err{text-align:center;color:#fca5a5}
-</style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#f3f4f6;min-height:100vh}main{width:min(900px,100%);margin:auto;min-height:100vh;padding:18px;display:flex;flex-direction:column;gap:15px}.score{text-align:center;font-weight:800;font-size:clamp(18px,3vw,28px)}.sub{text-align:center;color:#9ca3af;font-size:13px;margin-top:4px}.lightWrap{flex:1;min-height:280px;display:grid;place-items:center}.light{width:min(45vh,42vw,330px);min-width:230px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;text-align:center;background:#374151;box-shadow:0 0 35px #0008;transition:.15s}.light.green{background:#22c55e;color:#07150c;box-shadow:0 0 55px #22c55e77}.light.amber{background:#f59e0b;color:#211300;box-shadow:0 0 55px #f59e0b77}.light.red{background:#ef4444;color:white;box-shadow:0 0 65px #ef444499}.timer{font-size:clamp(48px,8vw,82px);font-weight:900;font-variant-numeric:tabular-nums;line-height:1}.state{font-weight:900;letter-spacing:.08em;margin-top:8px}.panel{background:#151c2d;border:1px solid #293247;border-radius:17px;padding:15px}.meter{height:26px;background:#080c16;border-radius:13px;overflow:hidden;position:relative}.fill{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444)}.line{position:absolute;top:0;bottom:0;width:3px;background:white;left:55%}.row{display:grid;grid-template-columns:1fr 58px;gap:12px;align-items:center}.val{text-align:right;font-variant-numeric:tabular-nums}label{font-weight:750;display:block;margin-bottom:8px}input[type=range]{width:100%}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}button{border:0;border-radius:13px;padding:14px;font-weight:800;font-size:15px;background:#e5e7eb;color:#111827}button.secondary{background:#293247;color:#f3f4f6}.cal{display:none;margin-top:12px;border-top:1px solid #293247;padding-top:13px}.cal.show{display:block}.calgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sample{background:#293247;color:white}.sample.active{outline:3px solid white}.result{margin-top:10px;color:#d1d5db;line-height:1.5}.use{width:100%;margin-top:10px}.err{text-align:center;color:#fca5a5}</style>
 </head>
-<body>
-<main>
+<body><main>
 <div><div class="score" id="score">YOU'VE SPOKEN ~0% OF THE MEETING</div><div class="sub" id="mt">Meeting 00:00</div></div>
 <div class="lightWrap"><div class="light" id="light"><div><div class="timer" id="timer">00:00</div><div class="state" id="state">LISTENING</div></div></div></div>
-<section class="panel">
- <div class="row"><div><label>MIC LEVEL</label><div class="meter"><div class="fill" id="fill"></div><div class="line" id="line"></div></div></div><div class="val" id="level">0</div></div>
- <div style="margin-top:14px"><label>ME THRESHOLD <span id="tv">55</span></label><input id="thr" type="range" min="5" max="95" value="55"></div>
- <div class="cal" id="cal">
-   <div class="calgrid">
-     <button class="sample" id="other">HOLD: OTHERS TALKING</button>
-     <button class="sample" id="me">HOLD: I'M TALKING</button>
-   </div>
-   <div class="result" id="cres">Hold each button while that source is speaking. Sample several seconds of each.</div>
-   <button class="use" id="use" disabled>USE SUGGESTED THRESHOLD</button>
- </div>
-</section>
-<div class="buttons"><button class="secondary" id="calbtn">CALIBRATE</button><button id="reset">RESET MEETING</button></div>
-<div class="err" id="err"></div>
-</main>
-<script>
+<section class="panel"><div class="row"><div><label>MIC LEVEL</label><div class="meter"><div class="fill" id="fill"></div><div class="line" id="line"></div></div></div><div class="val" id="level">0</div></div><div style="margin-top:14px"><label>ME THRESHOLD <span id="tv">55</span></label><input id="thr" type="range" min="5" max="95" value="55"></div><div class="cal" id="cal"><div class="calgrid"><button class="sample" id="other">HOLD: OTHERS TALKING</button><button class="sample" id="me">HOLD: I'M TALKING</button></div><div class="result" id="cres">Hold each button while that source is speaking. Sample several seconds of each.</div><button class="use" id="use" disabled>USE SUGGESTED THRESHOLD</button></div></section>
+<div class="buttons"><button class="secondary" id="calbtn">CALIBRATE</button><button id="reset">RESET MEETING</button></div><div class="err" id="err"></div>
+</main><script>
 (()=>{
-const $=x=>document.getElementById(x),thr=$('thr');
-const saved=localStorage.getItem('mcThreshold');if(saved)thr.value=saved;
-let analyser,data,smooth=0,speaking=false,speechStart=null,lastAbove=0,aboveSince=null;
-let meetingStart=performance.now(), intervals=[],open=null;
-let mode=null, otherSamples=[],meSamples=[];
-const GRACE=1100,HOLD=180;
+const $=x=>document.getElementById(x),thr=$('thr');const saved=localStorage.getItem('mcThreshold');if(saved)thr.value=saved;
+let speaking=false,speechStart=null,lastAbove=0,aboveSince=null,meetingStart=performance.now(),intervals=[],open=null,mode=null,otherSamples=[],meSamples=[];const GRACE=1100,HOLD=180;
 function fmt(ms){let s=Math.max(0,Math.floor(ms/1000));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
-function thresholdUI(){let v=+thr.value;$('tv').textContent=v;$('line').style.left=v+'%';localStorage.setItem('mcThreshold',v)}
-thr.oninput=thresholdUI;thresholdUI();
-async function audio(){try{const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false},video:false});const C=window.AudioContext||window.webkitAudioContext,ctx=new C();const src=ctx.createMediaStreamSource(stream);analyser=ctx.createAnalyser();analyser.fftSize=1024;analyser.smoothingTimeConstant=.25;src.connect(analyser);data=new Uint8Array(analyser.fftSize);requestAnimationFrame(loop)}catch(e){$('err').textContent='Microphone unavailable: '+e}}
-function level(){analyser.getByteTimeDomainData(data);let sum=0;for(const x of data){let n=(x-128)/128;sum+=n*n}let rms=Math.sqrt(sum/data.length),v=Math.max(0,Math.min(100,(20*Math.log10(rms||.00001)+60)*1.65));smooth=smooth*.72+v*.28;return smooth}
+function thresholdUI(){let v=+thr.value;$('tv').textContent=v;$('line').style.left=v+'%';localStorage.setItem('mcThreshold',v)}thr.oninput=thresholdUI;thresholdUI();
+function nativeLevel(){try{return window.NativeAudio?Math.max(0,Math.min(100,+NativeAudio.level()||0)):0}catch(e){return 0}}
+function nativeError(){try{return window.NativeAudio?NativeAudio.error():''}catch(e){return String(e)}}
+function startAudio(){if(!window.NativeAudio){$('err').textContent='Native audio bridge unavailable';return}try{NativeAudio.start()}catch(e){$('err').textContent='Could not start microphone: '+e}}
 function start(now){speaking=true;speechStart=now;open={start:now,end:null};intervals.push(open)}
 function stop(now){speaking=false;if(open)open.end=now;open=null;speechStart=null;aboveSince=null}
 function light(now){let l=$('light');l.className='light';if(!speaking){$('timer').textContent='00:00';$('state').textContent='LISTENING';return}let e=now-speechStart;$('timer').textContent=fmt(e);if(e<30000){l.classList.add('green');$('state').textContent='YOUR TURN'}else if(e<60000){l.classList.add('amber');$('state').textContent='WRAP UP'}else{l.classList.add('red');$('state').textContent='STOP TALKING'}}
 function rolling(now){let ws=now-600000;intervals=intervals.filter(i=>(i.end??now)>ws);let spoken=0;for(const i of intervals){let a=Math.max(i.start,ws),b=Math.min(i.end??now,now);spoken+=Math.max(0,b-a)}let d=Math.min(600000,now-meetingStart),p=d>1000?Math.round(100*spoken/d):0;$('score').textContent=`YOU'VE SPOKEN ~${p}% OF THE LAST ${d<600000?'MEETING':'10 MIN'}`}
-function stats(a){if(!a.length)return null;let b=[...a].sort((x,y)=>x-y);return {median:b[Math.floor(b.length/2)],p20:b[Math.floor(b.length*.2)],p80:b[Math.floor(b.length*.8)]}}
-function calUpdate(){let o=stats(otherSamples),m=stats(meSamples),txt=[];if(o)txt.push(`Others: typical ${Math.round(o.median)} (range ${Math.round(o.p20)}-${Math.round(o.p80)})`);if(m)txt.push(`Me: typical ${Math.round(m.median)} (range ${Math.round(m.p20)}-${Math.round(m.p80)})`);if(o&&m){let suggested=Math.round((o.p80+m.p20)/2);suggested=Math.max(5,Math.min(95,suggested));txt.push(m.p20>o.p80?`Good separation. Suggested threshold: ${suggested}`:`Ranges overlap. Try moving the tablet closer to you or lowering speaker volume. Tentative threshold: ${suggested}`);$('use').disabled=false;$('use').dataset.v=suggested}$('cres').innerHTML=txt.join('<br>')||'Hold each button while that source is speaking. Sample several seconds of each.'}
-function loop(now){let v=level();$('fill').style.width=v+'%';$('level').textContent=Math.round(v);if(mode==='other')otherSamples.push(v);if(mode==='me')meSamples.push(v);let t=+thr.value;if(v>=t){lastAbove=now;if(aboveSince===null)aboveSince=now;if(!speaking&&now-aboveSince>=HOLD)start(now)}else{aboveSince=null;if(speaking&&now-lastAbove>=GRACE)stop(lastAbove)}light(now);rolling(now);$('mt').textContent='Meeting '+fmt(now-meetingStart);requestAnimationFrame(loop)}
-function hold(btn,name){const begin=e=>{e.preventDefault();mode=name;btn.classList.add('active')};const end=e=>{e.preventDefault();mode=null;btn.classList.remove('active');calUpdate()};btn.addEventListener('pointerdown',begin);btn.addEventListener('pointerup',end);btn.addEventListener('pointercancel',end);btn.addEventListener('pointerleave',e=>{if(mode===name)end(e)})}
-hold($('other'),'other');hold($('me'),'me');
-$('calbtn').onclick=()=>{$('cal').classList.toggle('show');otherSamples=[];meSamples=[];$('use').disabled=true;calUpdate()};
-$('use').onclick=()=>{thr.value=$('use').dataset.v;thresholdUI()};
-$('reset').onclick=()=>{let n=performance.now();intervals=[];open=null;speaking=false;speechStart=null;aboveSince=null;meetingStart=n};
-audio();
+function stats(a){if(!a.length)return null;let b=[...a].sort((x,y)=>x-y);return{median:b[Math.floor(b.length/2)],p20:b[Math.floor(b.length*.2)],p80:b[Math.floor(b.length*.8)]}}
+function calUpdate(){let o=stats(otherSamples),m=stats(meSamples),txt=[];if(o)txt.push(`Others: typical ${Math.round(o.median)} (range ${Math.round(o.p20)}-${Math.round(o.p80)})`);if(m)txt.push(`Me: typical ${Math.round(m.median)} (range ${Math.round(m.p20)}-${Math.round(m.p80)})`);if(o&&m){let suggested=Math.max(5,Math.min(95,Math.round((o.p80+m.p20)/2)));txt.push(m.p20>o.p80?`Good separation. Suggested threshold: ${suggested}`:`Ranges overlap. Try moving the tablet closer to you or lowering speaker volume. Tentative threshold: ${suggested}`);$('use').disabled=false;$('use').dataset.v=suggested}$('cres').innerHTML=txt.join('<br>')||'Hold each button while that source is speaking. Sample several seconds of each.'}
+function loop(now){let v=nativeLevel();$('fill').style.width=v+'%';$('level').textContent=Math.round(v);let err=nativeError();if(err)$('err').textContent=err;else $('err').textContent='';if(mode==='other')otherSamples.push(v);if(mode==='me')meSamples.push(v);let t=+thr.value;if(v>=t){lastAbove=now;if(aboveSince===null)aboveSince=now;if(!speaking&&now-aboveSince>=HOLD)start(now)}else{aboveSince=null;if(speaking&&now-lastAbove>=GRACE)stop(lastAbove)}light(now);rolling(now);$('mt').textContent='Meeting '+fmt(now-meetingStart);requestAnimationFrame(loop)}
+function hold(btn,name){const begin=e=>{e.preventDefault();mode=name;btn.classList.add('active')};const end=e=>{e.preventDefault();mode=null;btn.classList.remove('active');calUpdate()};btn.addEventListener('pointerdown',begin);btn.addEventListener('pointerup',end);btn.addEventListener('pointercancel',end);btn.addEventListener('pointerleave',e=>{if(mode===name)end(e)})}hold($('other'),'other');hold($('me'),'me');
+$('calbtn').onclick=()=>{$('cal').classList.toggle('show');otherSamples=[];meSamples=[];$('use').disabled=true;calUpdate()};$('use').onclick=()=>{thr.value=$('use').dataset.v;thresholdUI()};$('reset').onclick=()=>{let n=performance.now();intervals=[];open=null;speaking=false;speechStart=null;aboveSince=null;meetingStart=n};
+startAudio();requestAnimationFrame(loop);
 })();
-</script>
-</body></html>
+</script></body></html>
