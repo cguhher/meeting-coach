@@ -102,7 +102,9 @@ class MainActivity : ComponentActivity() {
         if(actualChannels>=2){var i=0;while(i+1<n){val l=b[i]/32768.0;val r=b[i+1]/32768.0;ls+=l*l;rs+=r*r;lc++;rc++;i+=2}}
         else{for(i in 0 until n){val x=b[i]/32768.0;ls+=x*x;lc++};rs=ls;rc=lc}
         fun mapped(sum:Double,c:Int):Double{val rms=sqrt(sum/maxOf(c,1));val db=20*log10(max(rms,0.00001));return((db+60)*1.65).coerceIn(0.0,100.0)}
-        val l=mapped(ls,lc), rr=mapped(rs,rc);leftLevel=leftLevel*.72+l*.28;rightLevel=rightLevel*.72+rr*.28;currentLevel=(leftLevel+rightLevel)/2
+        val l = mapped(ls,lc)
+        val rr = mapped(rs,rc)
+        leftLevel=leftLevel*.72+l*.28;rightLevel=rightLevel*.72+rr*.28;currentLevel=(leftLevel+rightLevel)/2
         if(currentLevel>8){val mono=DoubleArray(min(n/actualChannels,512));for(i in mono.indices){var s=0.0;for(c in 0 until actualChannels)s+=b[i*actualChannels+c]/32768.0;mono[i]=s/actualChannels};val f=features(mono,sr)
             when(enrollMode){"chris"->synchronized(chrisFeatures){if(chrisFeatures.size<500)chrisFeatures.add(f)};"other"->synchronized(otherFeatures){if(otherFeatures.size<500)otherFeatures.add(f)}}
             classify(f)
@@ -113,8 +115,7 @@ class MainActivity : ComponentActivity() {
     private fun features(x:DoubleArray,sr:Int):DoubleArray{
         val freqs=doubleArrayOf(180.0,300.0,500.0,800.0,1200.0,1800.0,2600.0,3600.0);val out=DoubleArray(freqs.size+1)
         var z=0;for(i in 1 until x.size)if((x[i]>=0)!=(x[i-1]>=0))z++;out[0]=z.toDouble()/x.size
-        var total=1e-9
-        for(k in freqs.indices){val w=2*PI*freqs[k]/sr;val coeff=2*cos(w);var q0:Double;var q1=0.0;var q2=0.0;for(v in x){q0=coeff*q1-q2+v;q2=q1;q1=q0};val p=max(1e-12,q1*q1+q2*q2-coeff*q1*q2);out[k+1]=ln(p);total+=p}
+        for(k in freqs.indices){val w=2*PI*freqs[k]/sr;val coeff=2*cos(w);var q0:Double;var q1=0.0;var q2=0.0;for(v in x){q0=coeff*q1-q2+v;q2=q1;q1=q0};val p=max(1e-12,q1*q1+q2*q2-coeff*q1*q2);out[k+1]=ln(p)}
         val mean=out.drop(1).average();for(i in 1 until out.size)out[i]-=mean;return out
     }
     private fun centroid(a:List<DoubleArray>):DoubleArray?{if(a.size<8)return null;val c=DoubleArray(a[0].size);for(v in a)for(i in c.indices)c[i]+=v[i];for(i in c.indices)c[i]/=a.size;return c}
