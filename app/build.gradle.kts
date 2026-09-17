@@ -6,6 +6,15 @@ android {
     namespace = "uk.co.cgunner.meetingcoach"
     compileSdk = 35
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
     defaultConfig {
         applicationId = "uk.co.cgunner.meetingcoach"
         minSdk = 26
